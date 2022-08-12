@@ -9,7 +9,7 @@
                 "-g",
                 "${file}",
                 "-o",
-                "${fileDirname}/bin/${fileBasename}.out",
+                "${fileDirname}/bin/${fileBasenameNoExtension}.out",
                 "-lraylib", 
                 "-lGL", 
                 "-lm", 
