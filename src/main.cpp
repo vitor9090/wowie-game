@@ -26,6 +26,8 @@ class Player : public Entity
 
     public:
         std::vector<Vector2> queue = {};
+        Vector2 startPosition = { 16, 16 };
+
         int speed_multiplier = 5;
         int speed = 16 * speed_multiplier;
 
@@ -67,6 +69,15 @@ class Player : public Entity
                 (float)IsKeyDown(KEY_DOWN) - (float)IsKeyDown(KEY_UP)
             };
 
+            if (IsKeyDown(KEY_R))
+            {
+                position = startPosition;
+                canAddToQueue = true;
+                animTimer = 0;
+                playingQueue = false;
+                currentQueueValue = 0;
+                queue.clear();
+            }
 
             if (!queueIsEmpty)
                 if (IsKeyDown(KEY_Q) && !playingQueue)
@@ -85,15 +96,15 @@ class Player : public Entity
                     {
                         position.x += queue[currentQueueValue].x * speed * GetFrameTime();
                         position.y += queue[currentQueueValue].y * speed * GetFrameTime();
+
+                        position.x = Clamp(position.x, 16, 175 - 16);
+                        position.y = Clamp(position.y, 16, 175 - 16);
                     } else {
                         currentQueueValue++;
                         animTimer = 0;
                     }
                 } else {
                     currentQueueValue = 0;
-                    playingQueue = false;
-                    canAddToQueue = true;
-                    queue.clear();
                 }
             }
 
@@ -217,10 +228,10 @@ void GameLoop()
                 DrawTexturePro(target.texture, sourceRec, destRec, ORIGIN, 0.0f, WHITE);
             EndMode2D();
 
-            DrawText("QUEUE", (ScreenInfo.WIDTH / 2 + VIRTUAL_PLAY_AREA.width) - (6 * 14) / 4, VIRTUAL_PLAY_AREA.y, 14, WHITE);
+            DrawText("QUEUE", (ScreenInfo.WIDTH / 2 + VIRTUAL_PLAY_AREA.width) - (6 * 32) / 4, VIRTUAL_PLAY_AREA.y + 16, 32, WHITE);
             for (u_short i = 1; i < player.queue.size() + 1; i++)
             {
-                DrawText((TextFormat)("Vec{ %i , %i };", (int)player.queue[i - 1].x, (int)player.queue[i - 1].y), (ScreenInfo.WIDTH / 2 + VIRTUAL_PLAY_AREA.width) - (14 * 14) / 2, (VIRTUAL_PLAY_AREA.y + 14) + i * 14, 14, WHITE);
+                DrawText((TextFormat)("Vec{ %i , %i };", (int)player.queue[i - 1].x, (int)player.queue[i - 1].y), (ScreenInfo.WIDTH / 2 + VIRTUAL_PLAY_AREA.width) - 80, (VIRTUAL_PLAY_AREA.y + 32) + i * 32, 14, WHITE);
             }
         EndDrawing();
     }
